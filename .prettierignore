@@ -1,0 +1,7 @@
+node_modules
+build
+public
+components.json
+vite.config.js
+tsconfig.json
+./src/components/ui/*
