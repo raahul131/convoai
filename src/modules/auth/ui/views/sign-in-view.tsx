@@ -80,6 +80,7 @@ export const SignInView = () => {
       {
         onSuccess: () => {
           setIsPending(false);
+          router.push("/");
         },
         onError: ({ error }) => {
           setIsPending(false);
