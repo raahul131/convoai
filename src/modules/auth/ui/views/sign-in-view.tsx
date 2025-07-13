@@ -3,10 +3,15 @@
 import z from "zod";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
+import { FaGithub } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { OctagonAlertIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -17,11 +22,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { OctagonAlertIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -51,6 +53,7 @@ export const SignInView = () => {
       {
         email: data.email,
         password: data.password,
+        callbackURL: "/",
       },
       {
         onSuccess: () => {
@@ -60,6 +63,27 @@ export const SignInView = () => {
         onError: ({ error }) => {
           setIsPending(false);
           setError(error.message || "An error occurred while signing in.");
+        },
+      },
+    );
+  };
+
+  const onSocial = (provider: "github" | "google") => {
+    setError(null);
+    setIsPending(true);
+
+    authClient.signIn.social(
+      {
+        provider: provider,
+        callbackURL: "/",
+      },
+      {
+        onSuccess: () => {
+          setIsPending(false);
+        },
+        onError: ({ error }) => {
+          setIsPending(false);
+          setError(error.message);
         },
       },
     );
@@ -134,7 +158,7 @@ export const SignInView = () => {
                 <Button
                   disabled={isPending}
                   type={"submit"}
-                  className={"w-full"}
+                  className={"w-full cursor-pointer"}
                 >
                   Sign in
                 </Button>
@@ -149,18 +173,20 @@ export const SignInView = () => {
                   <Button
                     type={"button"}
                     disabled={isPending}
-                    className={"w-full"}
+                    className={"w-full cursor-pointer"}
                     variant={"outline"}
+                    onClick={() => onSocial("google")}
                   >
-                    Google
+                    <FcGoogle />
                   </Button>{" "}
                   <Button
                     type={"button"}
                     disabled={isPending}
-                    className={"w-full"}
+                    className={"w-full cursor-pointer"}
                     variant={"outline"}
+                    onClick={() => onSocial("github")}
                   >
-                    Github
+                    <FaGithub />
                   </Button>
                 </div>
 
