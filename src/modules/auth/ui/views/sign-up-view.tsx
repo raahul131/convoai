@@ -91,6 +91,7 @@ export const SignUpView = () => {
       {
         onSuccess: () => {
           setIsPending(false);
+          router.push("/");
         },
         onError: ({ error }) => {
           setIsPending(false);
